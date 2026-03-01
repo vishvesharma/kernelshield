@@ -1,0 +1,98 @@
+/* Simple dark theme with neon accents */
+:root {
+  --bg-color: #121212;
+  --card-bg: #1e1e1e;
+  --accent: #00ffcc;
+  --text-color: #e0e0e0;
+  --danger: #ff5a5f;
+  --warning: #ffb400;
+}
+
+body, #root, .app-container {
+  margin: 0;
+  padding: 0;
+  height: 100%;
+  background-color: var(--bg-color);
+  color: var(--text-color);
+  font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+}
+
+.app-container {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  padding: 20px;
+}
+
+header {
+  font-size: 2rem;
+  margin-bottom: 10px;
+  color: var(--accent);
+}
+
+.controls {
+  margin: 10px 0 20px;
+}
+
+.controls button {
+  margin: 0 5px;
+  padding: 10px 15px;
+  background-color: var(--card-bg);
+  border: 1px solid var(--accent);
+  color: var(--accent);
+  cursor: pointer;
+  border-radius: 4px;
+}
+
+.controls button:hover {
+  background-color: var(--accent);
+  color: var(--bg-color);
+}
+
+.summary-cards {
+  display: flex;
+  gap: 15px;
+  margin-bottom: 30px;
+  flex-wrap: wrap;
+  justify-content: center;
+}
+
+.card {
+  background-color: var(--card-bg);
+  padding: 15px 20px;
+  border-radius: 8px;
+  min-width: 120px;
+  text-align: center;
+  box-shadow: 0 0 10px rgba(0, 255, 204, 0.2);
+}
+
+.chart {
+  background-color: var(--card-bg);
+  padding: 20px;
+  border-radius: 8px;
+  margin-bottom: 30px;
+  box-shadow: 0 0 10px rgba(0, 255, 204, 0.2);
+}
+
+.events-feed {
+  width: 100%;
+  max-width: 800px;
+  background-color: var(--card-bg);
+  border-radius: 8px;
+  padding: 20px;
+  box-shadow: 0 0 10px rgba(0, 255, 204, 0.2);
+}
+
+events-feed ul {
+  list-style: none;
+  padding: 0;
+}
+
+.events-feed li {
+  padding: 5px 0;
+  border-bottom: 1px solid #333;
+}
+
+.events-feed li:last-child {
+  border-bottom: none;
+}
