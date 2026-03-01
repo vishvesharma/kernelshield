@@ -125,12 +125,13 @@ Legacy `DB_PATH` environment variable is still supported.
 
 ## Thread Safety & Production Notes
 
-- SQLite is configured in its default mode; it works for light traffic but may
-  block under contention.  For higher concurrency enable WAL mode or switch to
-  PostgreSQL/MySQL with a connection pool.
-- The in‑memory `event_log` in `main.py` is **not thread-safe**.  In production
-  it should be replaced with a thread-safe queue or external store (Redis,
-  database) with atomic updates.  The health engine itself is pure and takes a
-  list of events, so it can easily operate on whichever backend is chosen.
+- SQLite is enabled with WAL mode during initialization to improve concurrency
+  under moderate load. For very high throughput switch to PostgreSQL/MySQL
+  with a proper connection pool.
+- The backend keeps a small in‑memory `event_log` for fast health snapshots; a
+  `threading.Lock` now protects access to `event_log` and `health_history` in
+  `backend/main.py` to avoid races in the prototype. In production replace the
+  in‑memory queue with a durable, concurrent store (Redis, RDBMS) for
+  correctness at scale.
 
 ---

@@ -13,6 +13,7 @@ from fastapi.requests import Request
 from fastapi.responses import JSONResponse
 from fastapi import WebSocket, WebSocketDisconnect
 import asyncio, json
+import threading
 
 from backend.simulation import (
     simulate_buffer_overflow,
@@ -160,6 +161,9 @@ event_log: List[Dict[str, Any]] = []
 # health score history for trend chart
 health_history: List[Dict[str, Any]] = []
 
+# lock protecting in-memory structures (simple and effective for prototype)
+event_lock = threading.Lock()
+
 # Severity normalization mapping; detection modules may return strings
 SEVERITY_MAP: Dict[str, float] = {
     "Low": 2,
@@ -204,14 +208,15 @@ def _append_event(sim_data: Dict[str, Any], detection: Dict[str, Any], risk: Opt
                     except ValueError:
                         severity_val = None
         timestamp = datetime.now(timezone.utc).isoformat()
-        # keep only last MAX_EVENTS events in memory
-        if len(event_log) >= config.MAX_EVENTS:
-            event_log.pop(0)
-        event_log.append({
-            "type": sim_data.get("type"),
-            "severity": severity_val,
-            "timestamp": timestamp,
-        })
+        # keep only last MAX_EVENTS events in memory (thread-safe)
+        with event_lock:
+            if len(event_log) >= config.MAX_EVENTS:
+                event_log.pop(0)
+            event_log.append({
+                "type": sim_data.get("type"),
+                "severity": severity_val,
+                "timestamp": timestamp,
+            })
         # also persist to SQLite for durability (DB should already be initialized)
         try:
             store.append_event(
@@ -229,8 +234,12 @@ def _append_event(sim_data: Dict[str, Any], detection: Dict[str, Any], risk: Opt
             logger.exception("Failed to persist event to DB")
         # record health history entry
         try:
-            current = health_engine.compute_health(event_log)
-            health_history.append({"timestamp": timestamp, "score": current["security_score"]})
+            # pass a snapshot to the health engine
+            with event_lock:
+                snapshot = list(event_log)
+            current = health_engine.compute_health(snapshot)
+            with event_lock:
+                health_history.append({"timestamp": timestamp, "score": current["security_score"]})
         except Exception:
             logger.exception("Failed to update health history")
 
@@ -338,8 +347,10 @@ async def websocket_endpoint(websocket: WebSocket):
 def system_health():
 	logger.info("System health requested")
 	# compute health using the current event log
-	health = health_engine.compute_health(event_log)
-	return {
+    with event_lock:
+        snapshot = list(event_log)
+    health = health_engine.compute_health(snapshot)
+    return {
 		"metadata": {"module": "System Health", "timestamp": datetime.now(timezone.utc).isoformat()},
 		"analysis": health,
 		"status": "System stable" if health["risk_level"] != "High" else "Action required",
@@ -377,7 +388,8 @@ def health_history_endpoint():
 	"""Return the recorded health scores over time."""
 	logger.info("Health history requested")
 	# just return the in-memory history; in prod would query a store
-	return health_history
+ 	with event_lock:
+        return list(health_history)
 
 
 @app.get("/api/v1/system/summary", response_model=Dict[str, Any], tags=["System"])

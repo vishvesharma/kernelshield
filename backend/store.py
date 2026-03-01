@@ -21,10 +21,17 @@ def init_db():
         """
         CREATE TABLE events (
             id INTEGER PRIMARY KEY AUTOINCREMENT,
+            threat_tier TEXT,
+            threat_score REAL,
             type TEXT,
             severity REAL,
             severity_score REAL,
             risk_level TEXT,
+    # enable WAL mode for improved concurrency
+    try:
+        cur.execute("PRAGMA journal_mode=WAL")
+    except Exception:
+        pass
             confidence REAL,
             impact TEXT,
             threat_tier TEXT,
