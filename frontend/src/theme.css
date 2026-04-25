@@ -1,0 +1,188 @@
+/* ─── Theme variables — appended to support light mode ──────────────────── */
+
+/* Light theme overrides applied when <html data-theme="light"> */
+[data-theme="light"] {
+  --bg-base:       #f0f4f8;
+  --bg-primary:    #f7f9fc;
+  --bg-secondary:  #edf2f7;
+  --bg-card:       rgba(255, 255, 255, 0.9);
+  --bg-card-hover: rgba(255, 255, 255, 1);
+
+  --border-subtle:  rgba(0, 0, 0, 0.07);
+  --border-strong:  rgba(0, 0, 0, 0.14);
+
+  --text-primary:   #0f172a;
+  --text-secondary: #374151;
+  --text-muted:     #6b7280;
+
+  --cyan:          #0284c7;
+  --cyan-dim:      rgba(2, 132, 199, 0.12);
+  --cyan-glow:     rgba(2, 132, 199, 0.25);
+
+  --green:         #059669;
+  --green-dim:     rgba(5, 150, 105, 0.12);
+  --green-glow:    rgba(5, 150, 105, 0.25);
+
+  --amber:         #d97706;
+  --amber-dim:     rgba(217, 119, 6, 0.12);
+  --amber-glow:    rgba(217, 119, 6, 0.25);
+
+  --red:           #dc2626;
+  --red-dim:       rgba(220, 38, 38, 0.10);
+  --red-glow:      rgba(220, 38, 38, 0.25);
+}
+
+[data-theme="light"] body {
+  background-image:
+    radial-gradient(ellipse 60% 40% at 0% 0%, rgba(2,132,199,0.05) 0%, transparent 70%),
+    radial-gradient(ellipse 50% 30% at 100% 80%, rgba(220,38,38,0.04) 0%, transparent 60%);
+}
+
+[data-theme="light"] .topbar {
+  background: rgba(247, 249, 252, 0.94);
+  border-bottom-color: var(--border-subtle);
+}
+
+[data-theme="light"] .sidebar {
+  background: var(--bg-secondary);
+}
+
+[data-theme="light"] .card,
+[data-theme="light"] .stat-card,
+[data-theme="light"] .modal-box,
+[data-theme="light"] .dropdown-panel {
+  background: var(--bg-card);
+  border-color: var(--border-subtle);
+  box-shadow: 0 2px 16px rgba(0,0,0,0.06);
+}
+
+[data-theme="light"] .sim-console {
+  background: #1e293b;
+}
+
+[data-theme="light"] .search-input {
+  background: rgba(0,0,0,0.04);
+  color: var(--text-primary);
+}
+
+[data-theme="light"] .filter-chip {
+  color: var(--text-secondary);
+}
+
+[data-theme="light"] .data-table th {
+  color: var(--text-muted);
+}
+
+[data-theme="light"] .data-table td {
+  color: var(--text-secondary);
+}
+
+[data-theme="light"] .hero-banner.secure {
+  background: rgba(5,150,105,0.06);
+  border-color: rgba(5,150,105,0.25);
+}
+
+[data-theme="light"] .topbar-status {
+  background: rgba(0,0,0,0.04);
+  border-color: var(--border-subtle);
+}
+
+/* Smooth theme transition */
+*, *::before, *::after {
+  transition:
+    background-color 0.3s ease,
+    border-color 0.3s ease,
+    color 0.2s ease,
+    box-shadow 0.3s ease;
+}
+
+/* But keep animation-sensitive elements snappy */
+.toggle-thumb,
+.sidebar-item,
+.btn,
+.dot { transition: none !important; }
+
+/* ─── Auto Demo Cursor ──────────────────────────────────────────────────── */
+.demo-cursor {
+  position: fixed;
+  width: 20px;
+  height: 20px;
+  border-radius: 50%;
+  background: rgba(0, 229, 255, 0.9);
+  box-shadow: 0 0 12px rgba(0,229,255,0.7), 0 0 24px rgba(0,229,255,0.3);
+  pointer-events: none;
+  z-index: 9999;
+  transform: translate(-50%, -50%);
+  transition: left 0.6s cubic-bezier(0.25,0.46,0.45,0.94),
+              top  0.6s cubic-bezier(0.25,0.46,0.45,0.94),
+              transform 0.12s ease,
+              background 0.2s ease;
+}
+
+.demo-cursor::after {
+  content: '';
+  position: absolute;
+  inset: -4px;
+  border-radius: 50%;
+  border: 1.5px solid rgba(0,229,255,0.5);
+  animation: cursor-ring 1.5s ease-in-out infinite;
+}
+
+@keyframes cursor-ring {
+  0%, 100% { transform: scale(1); opacity: 0.6; }
+  50%       { transform: scale(1.6); opacity: 0; }
+}
+
+.demo-cursor.clicking {
+  transform: translate(-50%, -50%) scale(0.75);
+  background: rgba(244, 63, 94, 0.9);
+  box-shadow: 0 0 12px rgba(244,63,94,0.7);
+}
+
+/* ─── Demo mode banner ──────────────────────────────────────────────────── */
+.demo-banner {
+  position: fixed;
+  bottom: var(--sp-5);
+  left: 50%;
+  transform: translateX(-50%);
+  background: rgba(0,229,255,0.1);
+  border: 1px solid rgba(0,229,255,0.3);
+  backdrop-filter: blur(12px);
+  border-radius: var(--r-full);
+  padding: var(--sp-3) var(--sp-6);
+  display: flex;
+  align-items: center;
+  gap: var(--sp-3);
+  font-size: 0.82rem;
+  color: var(--cyan);
+  font-weight: 600;
+  z-index: 9998;
+  box-shadow: 0 8px 32px rgba(0,0,0,0.4);
+  cursor: pointer;
+  user-select: none;
+}
+
+.demo-banner .dot { width: 8px; height: 8px; }
+
+/* ─── Policy toggle ─────────────────────────────────────────────────────── */
+.policy-toggle {
+  width: 44px;
+  height: 24px;
+  border-radius: var(--r-full);
+  background: var(--border-strong);
+  position: relative;
+  cursor: pointer;
+  transition: background 0.25s ease;
+  flex-shrink: 0;
+}
+.policy-toggle.on { background: var(--green); }
+.policy-toggle-thumb {
+  position: absolute;
+  top: 3px; left: 3px;
+  width: 18px; height: 18px;
+  border-radius: 50%;
+  background: #fff;
+  transition: left 0.25s ease;
+  box-shadow: 0 1px 4px rgba(0,0,0,0.35);
+}
+.policy-toggle.on .policy-toggle-thumb { left: 23px; }
